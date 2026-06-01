@@ -7,164 +7,502 @@
     
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310b981' d='M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm368.2-64.3c-20.9 0-38.3 12.1-46.2 29.5c-7.9-17.4-25.3-29.5-46.2-29.5c-27.3 0-49.4 22-49.4 49.3c0 42.4 43.1 82.2 87 114c4.6 3.3 10.1 5.1 15.7 5.1s11.1-1.8 15.7-5.1c43.8-31.8 87-71.6 87-114c0-27.3-22-49.3-49.4-49.3z'/></svg>">
     <style>
         :root {
             --primary-green: #10b981;
             --dark-green: #064e3b;
             --light-green: #ecfdf5;
+            --mint-bg: #f0fdf4;
+            --text-main: #1f2937;
             --text-gray: #4b5563;
+            --text-muted: #6b7280;
             --white: #ffffff;
             --border-gray: #e5e7eb;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 30px rgba(6, 78, 59, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         
-        /* Enforces initial blank container window prior to authorization */
         body { 
-            color: var(--text-gray); 
-            background-color: #f3f4f6; 
+            color: var(--text-main); 
+            background: radial-gradient(circle at top right, var(--mint-bg) 0%, #f3f4f6 100%);
             min-height: 100vh; 
             display: none; 
             flex-direction: column; 
         }
 
-        header { background-color: var(--dark-green); color: var(--white); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 15px 20px; }
-        .logo { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-        
-        .doctor-profile { display: flex; align-items: center; gap: 15px; }
-        .doctor-info { text-align: right; }
-        .doctor-name { font-weight: 700; font-size: 16px; }
-        .doctor-title { font-size: 12px; color: var(--primary-green); font-weight: 600; }
-        
-        .logout-btn { background-color: transparent; border: 1px solid var(--primary-green); color: var(--white); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .logout-btn:hover { background-color: var(--primary-green); }
+        header { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-sm); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+        }
 
-        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 30px 20px; }
-        .page-header { margin-bottom: 25px; }
-        .page-header h1 { color: var(--dark-green); font-size: 28px; }
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 16px 24px; 
+        }
 
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--dark-green); 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: var(--primary-green); }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-menu li a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .nav-menu li a:hover, .nav-menu li a.active { color: var(--primary-green); }
+
+        .nav-menu li a.login-btn {
+            background-color: transparent; 
+            border: 1.5px solid var(--primary-green); 
+            color: var(--primary-green); 
+            padding: 8px 20px; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 14px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .nav-menu li a.login-btn:hover { 
+            background-color: var(--primary-green); 
+            color: var(--white);
+        }
+
+        .doctor-identity-badge {
+            background: var(--light-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .menu-toggle .bar { width: 25px; height: 3px; background-color: var(--dark-green); border-radius: 3px; }
+
+        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 40px 24px; }
+        .page-header { margin-bottom: 35px; }
+        .page-header h1 { color: var(--dark-green); font-size: 32px; font-weight: 800; }
+
+        /* Calendar Grid System */
         .calendar-year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .month-card { background: var(--white); border-radius: 12px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-gray); }
-        .month-title { color: var(--dark-green); font-size: 18px; font-weight: 700; margin-bottom: 12px; text-align: center; border-bottom: 2px solid var(--light-green); padding-bottom: 6px; }
-        .weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
-        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 4px; }
-        .day-cell { padding: 8px 0; font-size: 14px; font-weight: 500; border-radius: 6px; color: #1f2937; }
-        .day-cell:not(.empty):hover { background-color: var(--light-green); color: var(--dark-green); cursor: pointer; }
+        .month-card { background: var(--white); border-radius: 16px; padding: 20px; box-shadow: var(--shadow-md); border: 1px solid rgba(229, 231, 235, 0.6); }
+        .month-title { color: var(--dark-green); font-size: 18px; font-weight: 700; margin-bottom: 15px; text-align: center; border-bottom: 2px solid var(--light-green); padding-bottom: 8px; }
+        .weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; font-size: 12px; color: #9ca3af; margin-bottom: 10px; }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 6px; }
+        
+        .day-cell { padding: 10px 0; font-size: 14px; font-weight: 600; border-radius: 8px; color: #1f2937; transition: var(--transition); }
+        .day-cell:not(.empty) { cursor: pointer; background-color: #f9fafb; border: 1px solid #f3f4f6; }
+        .day-cell:not(.empty):hover { background-color: var(--light-green); color: var(--dark-green); transform: scale(1.05); }
         .day-cell.empty { background: transparent; }
 
-        footer { background-color: #e5e7eb; text-align: center; padding: 15px; font-size: 13px; color: var(--text-gray); }
+        /* Modals & Dashboard Components Layout */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box {
+            background: var(--white); padding: 30px; border-radius: 20px;
+            max-width: 580px; width: 100%; box-shadow: var(--shadow-md);
+            max-height: 85vh; overflow-y: auto; position: relative;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--dark-green); }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+
+        .slots-list-wrapper { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .schedule-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-gray);
+            background: #fafafa; font-size: 14px; font-weight: 600; gap: 10px;
+        }
+        .schedule-row.booked { border-left: 4px solid #ef4444; background: #fff5f5; }
+        .schedule-row.blocked { border-left: 4px solid #f59e0b; background: #fffbeb; }
+        .schedule-row.available { border-left: 4px solid #10b981; color: var(--text-muted); font-weight: 500; }
+        
+        .action-container-btn { display: flex; gap: 6px; }
+        .view-btn { background: var(--dark-green); color: var(--white); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .block-btn { background: #f59e0b; color: var(--white); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .clear-btn { background: #dc2626; color: var(--white); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        
+        .view-btn:hover { background: var(--primary-green); }
+        .block-btn:hover { background: #d97706; }
+        .clear-btn:hover { background: #b91c1c; }
+
+        /* Professional Modal Form Layouts */
+        .form-group { margin-bottom: 18px; text-align: left; width: 100%; }
+        .form-label { font-size: 13px; font-weight: 700; color: var(--dark-green); display: block; margin-bottom: 6px; }
+        .form-textarea { width: 100%; min-height: 90px; padding: 12px; border: 1px solid var(--border-gray); border-radius: 8px; font-size: 14px; resize: vertical; outline: none; }
+        .form-textarea:focus { border-color: var(--primary-green); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        
+        .btn-primary { width: 100%; background: var(--dark-green); color: var(--white); border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .btn-primary:hover { background: var(--primary-green); }
+
+        .dossier-card { background: #f9fafb; border: 1px solid var(--border-gray); padding: 20px; border-radius: 12px; text-align: left; }
+        .dossier-field { margin-bottom: 14px; }
+        .dossier-label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .dossier-value { font-size: 15px; font-weight: 600; color: var(--text-main); }
+        .dossier-textarea { background: var(--white); padding: 12px; border-radius: 8px; border: 1px solid var(--border-gray); min-height: 70px; font-size: 14px; color: #374151; margin-top: 5px; }
+
+        footer { background-color: #e5e7eb; text-align: center; padding: 18px; font-size: 13px; color: var(--text-gray); margin-top: 50px; }
+
+        @media (max-width: 992px) {
+            .menu-toggle { display: flex; }
+            .nav-menu { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); flex-direction: column; padding: 24px; gap: 20px; display: none; }
+            .nav-menu.open { display: flex; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="navbar">
-            <div class="logo"><i class="fa-solid fa-user-doctor"></i> Medical Management Console</div>
-            <div class="doctor-profile">
-                <div class="doctor-info">
-                    <div class="doctor-name" id="docNameDisplay">Authorized Doctor</div>
-                    <div class="doctor-title">Primary Physician</div>
-                </div>
-                <button type="button" class="logout-btn" id="portalLogout">Sign Out</button>
-            </div>
-        </div>
+        <nav class="navbar">
+            <a href="index.html" class="logo"><i class="fa-solid fa-user-doctor"></i> Console</a>
+            <button class="menu-toggle" id="menuToggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="doctor.html" class="active">Doctor Hub</a></li>
+                <li><a href="user.html">Profile</a></li>
+                <li><a href="booking.html">Book appointment</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><div class="doctor-identity-badge"><i class="fa-solid fa-user-md"></i> <span id="docNameDisplay">Dr. Admin</span></div></li>
+                <li><a href="login.html" class="login-btn" id="portalLogout">Sign Out</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main>
         <div class="page-header">
-            <h1>Annual Schedule Dashboard (2026)</h1>
+            <h1>Annual Schedule Control Center (<span id="calendarYearHeading">2026</span>)</h1>
+            <p style="color: var(--text-gray); font-size: 14px; margin-top: 5px;">Manage timelines. Inspect client descriptions, block personal offline periods, or clear appointments instantly.</p>
         </div>
         <div class="calendar-year-grid" id="calendarYearGrid"></div>
     </main>
 
+    <div class="modal-overlay" id="dayAgendaModal">
+        <div class="modal-box" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 id="agendaTitleDate">Daily Agenda Management</h3>
+                <button class="modal-close" onclick="closeModal('dayAgendaModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="slots-list-wrapper" id="agendaSlotsList"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="blockSlotModal">
+        <div class="modal-box" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3>Block Schedule Interval</h3>
+                <button class="modal-close" onclick="closeModal('blockSlotModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;" id="blockModalSubtitle"></p>
+            
+            <div class="form-group">
+                <label class="form-label" for="blockReasonInput">Reason for unavailability</label>
+                <textarea id="blockReasonInput" class="form-textarea" placeholder="E.g., Surgery, Private Clinic Duty, Lunch Break, Personal Leave..."></textarea>
+            </div>
+            
+            <button type="button" class="btn-primary" id="confirmBlockBtn">Confirm and Apply Lockout</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="patientDossierModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Appointment Profile Data</h3>
+                <button class="modal-close" onclick="closeModal('patientDossierModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="dossier-card" id="dossierCardContent"></div>
+            <div style="margin-top: 20px;">
+                <button class="clear-btn" id="forceCancelBookingBtn" style="width:100%; padding: 12px; font-size:14px; border-radius:10px;">
+                    <i class="fa-solid fa-calendar-minus"></i> Cancel & Clear This Slot Instantly
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer><p>© 2026 Hope Medical Center. Internal Dashboard Utility.</p></footer>
 
     <script>
-        // Adjust this string value to match your authorized test configuration directly
-        const AUTHORIZED_DOCTOR_EMAIL = "abyancoandulloo@gmail.com"; 
+        const AUTHORIZED_DOCTOR_EMAIL = "doctor@gmail.com"; 
+        const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co";
+        const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8";
+
+        let activeTargetDate = null;
+        let activeTargetTime = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem("user_token");
-            const profileRaw = localStorage.getItem("user_profile");
+            const userEmail = localStorage.getItem("user_email");
+            const userName = localStorage.getItem("user_name");
 
-            // Check if user session data exists
-            if (!token || !profileRaw) {
-                alert("Access Denied: Please log in via the credential gateway.");
+            document.getElementById("menuToggle").addEventListener("click", () => {
+                document.getElementById("navMenu").classList.toggle("open");
+            });
+
+            if (!token || !userEmail || userEmail.toLowerCase().trim() !== AUTHORIZED_DOCTOR_EMAIL) {
+                alert("Access Denied: Clinician authentication signature required.");
                 window.location.href = "login.html";
                 return;
             }
 
-            const profile = JSON.parse(profileRaw);
-
-            // Case Insensitive Validation
-            if (!profile.email || profile.email.toLowerCase() !== AUTHORIZED_DOCTOR_EMAIL.toLowerCase()) {
-                alert("Security Notification: Unauthorized access detected.");
-                localStorage.clear(); 
-                window.location.href = "login.html";
-                return;
-            }
-
-            // Expose structural markup container after validating identity access
-            document.getElementById("docNameDisplay").textContent = profile.full_name;
+            document.getElementById("docNameDisplay").textContent = userName || "Doctor Admin";
             document.body.style.display = "flex";
 
-            // Render calendar grid component mapping
-            generateYearCalendar(2026);
+            // --- DYNAMIC CONTINUOUS AUTOROLL YEAR SYSTEM ---
+            const currentYear = new Date().getFullYear();
+            document.getElementById("calendarYearHeading").textContent = currentYear;
+            generateYearCalendar(currentYear);
 
-            // Explicit Sign Out Action
-            document.getElementById("portalLogout").addEventListener("click", () => {
-                localStorage.clear();
-                window.location.href = "login.html";
+            document.getElementById("portalLogout").addEventListener("click", (e) => {
+                e.preventDefault(); localStorage.clear(); window.location.href = "login.html";
+            });
+
+            // Handle submission from professional custom modal pop-in input fields
+            document.getElementById("confirmBlockBtn").addEventListener("click", async () => {
+                const reasonText = document.getElementById("blockReasonInput").value.trim();
+                const btn = document.getElementById("confirmBlockBtn");
+                
+                btn.disabled = true;
+                btn.textContent = "Locking down slot...";
+
+                try {
+                    const res = await fetch(`${SUPABASE_BASE_URL}/rest/v1/appointments`, {
+                        method: "POST",
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            "apikey": ANON_KEY, 
+                            "Authorization": `Bearer ${localStorage.getItem("user_token")}` 
+                        },
+                        body: JSON.stringify({
+                            date: activeTargetDate,
+                            time: activeTargetTime,
+                            user_name: "Blocked Schedule Slot",
+                            user_email: AUTHORIZED_DOCTOR_EMAIL,
+                            description: reasonText || "Blocked by Physician"
+                        })
+                    });
+                    if (res.ok) {
+                        closeModal('blockSlotModal');
+                        openDayAgenda(activeTargetDate);
+                    } else { 
+                        alert("Could not write block row entry to table."); 
+                    }
+                } catch(e) { 
+                    console.error(e); 
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "Confirm and Apply Lockout";
+                }
+            });
+
+            // Patient profile cancellation/clear path
+            document.getElementById("forceCancelBookingBtn").addEventListener("click", async () => {
+                if (!activeTargetDate || !activeTargetTime) return;
+                if (!confirm(`Are you sure you want to clear the slot at ${activeTargetTime}? This will delete the record.`)) return;
+
+                const cleared = await deleteAppointmentRow(activeTargetDate, activeTargetTime);
+                if (cleared) {
+                    closeModal('patientDossierModal');
+                    openDayAgenda(activeTargetDate);
+                }
             });
         });
 
+        // Safe pipeline table deletion matching RLS rule parameters 
+        async function deleteAppointmentRow(dateVal, timeVal) {
+            try {
+                const res = await fetch(`${SUPABASE_BASE_URL}/rest/v1/appointments?date=eq.${dateVal}&time=eq.${timeVal}`, {
+                    method: "DELETE",
+                    headers: { 
+                        "apikey": ANON_KEY, 
+                        "Authorization": `Bearer ${localStorage.getItem("user_token")}` 
+                    }
+                });
+                return res.ok;
+            } catch(e) {
+                console.error("Error executing row delete operation:", e);
+                return false;
+            }
+        }
+
+        function generateTimeSlotsList() {
+            const slots = [];
+            for (let hour = 8; hour <= 20; hour++) {
+                for (let min = 0; min < 60; min += 15) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
+                    if (hour === 20) break;
+                }
+            }
+            return slots;
+        }
+
+        function closeModal(modalId) { document.getElementById(modalId).style.display = "none"; }
+
         function generateYearCalendar(year) {
             const grid = document.getElementById("calendarYearGrid");
+            grid.innerHTML = ""; 
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
             months.forEach((month, index) => {
-                const card = document.createElement("div");
-                card.className = "month-card";
+                const card = document.createElement("div"); card.className = "month-card";
+                const title = document.createElement("div"); title.className = "month-title"; title.textContent = month; card.appendChild(title);
 
-                const title = document.createElement("div");
-                title.className = "month-title";
-                title.textContent = month;
-                card.appendChild(title);
-
-                const weekdaysRow = document.createElement("div");
-                weekdaysRow.className = "weekdays-grid";
-                weekdays.forEach(d => {
-                    const cell = document.createElement("div");
-                    cell.textContent = d;
-                    weekdaysRow.appendChild(cell);
-                });
+                const weekdaysRow = document.createElement("div"); weekdaysRow.className = "weekdays-grid";
+                ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].forEach(d => { weekdaysRow.appendChild(document.createElement("div")).textContent = d; });
                 card.appendChild(weekdaysRow);
 
-                const daysGrid = document.createElement("div");
-                daysGrid.className = "days-grid";
-
+                const daysGrid = document.createElement("div"); daysGrid.className = "days-grid";
                 const firstDayIndex = new Date(year, index, 1).getDay();
                 const totalDays = new Date(year, index + 1, 0).getDate();
 
-                for (let i = 0; i < firstDayIndex; i++) {
-                    const emptyCell = document.createElement("div");
-                    emptyCell.className = "day-cell empty";
-                    daysGrid.appendChild(emptyCell);
-                }
+                for (let i = 0; i < firstDayIndex; i++) daysGrid.appendChild(document.createElement("div")).className = "day-cell empty";
 
                 for (let day = 1; day <= totalDays; day++) {
-                    const dayCell = document.createElement("div");
-                    dayCell.className = "day-cell";
-                    dayCell.textContent = day;
+                    const dayCell = document.createElement("div"); dayCell.className = "day-cell"; dayCell.textContent = day;
+                    dayCell.addEventListener("click", () => {
+                        activeTargetDate = `${year}-${(index + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                        openDayAgenda(activeTargetDate);
+                    });
                     daysGrid.appendChild(dayCell);
                 }
-
-                card.appendChild(daysGrid);
-                grid.appendChild(card);
+                card.appendChild(daysGrid); grid.appendChild(card);
             });
+        }
+
+        async function openDayAgenda(dateString) {
+            document.getElementById("agendaTitleDate").textContent = `Agenda Matrix: ${dateString}`;
+            const agendaSlotsList = document.getElementById("agendaSlotsList");
+            agendaSlotsList.innerHTML = `<p style="text-align:center; padding:10px;">Loading live database records...</p>`;
+            document.getElementById("dayAgendaModal").style.display = "flex";
+
+            let scheduledBookings = [];
+            try {
+                const response = await fetch(`${SUPABASE_BASE_URL}/rest/v1/appointments?date=eq.${dateString}&select=*`, {
+                    method: "GET",
+                    headers: { "apikey": ANON_KEY, "Authorization": `Bearer ${localStorage.getItem("user_token")}` }
+                });
+                if (response.ok) scheduledBookings = await response.json();
+            } catch (err) { console.error(err); }
+
+            agendaSlotsList.innerHTML = "";
+            const masterTimeSlots = generateTimeSlotsList();
+
+            masterTimeSlots.forEach(time => {
+                const row = document.createElement("div");
+                row.className = "schedule-row";
+
+                const bookingMatch = scheduledBookings.find(b => b.time.substring(0, 5) === time);
+
+                if (bookingMatch) {
+                    if (bookingMatch.user_email === AUTHORIZED_DOCTOR_EMAIL) {
+                        row.classList.add("blocked");
+                        row.innerHTML = `
+                            <span><i class="fa-solid fa-user-slash" style="color:#f59e0b;"></i> ${time} — <strong>Blocked:</strong> ${bookingMatch.description || 'Unavailable'}</span>
+                            <div class="action-container-btn">
+                                <button class="clear-btn" onclick="clearBlockedSlotDirectly('${dateString}', '${time}')">Clear Slot</button>
+                            </div>`;
+                    } else {
+                        row.classList.add("booked");
+                        row.innerHTML = `
+                            <span><i class="fa-solid fa-clock" style="color:#ef4444;"></i> ${time} — <strong>Patient:</strong> ${bookingMatch.user_name}</span>
+                            <div class="action-container-btn">
+                                <button class="view-btn" onclick='openPatientDossier(${JSON.stringify(bookingMatch)}, "${time}")'>Inspect Profile / Clear</button>
+                            </div>`;
+                    }
+                } else {
+                    row.classList.add("available");
+                    row.innerHTML = `
+                        <span><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ${time} — Open Interval</span>
+                        <div class="action-container-btn">
+                            <button class="block-btn" onclick="openBlockFormModal('${time}')"><i class="fa-solid fa-lock"></i> Block Slot</button>
+                        </div>`;
+                }
+                agendaSlotsList.appendChild(row);
+            });
+        }
+
+        function openBlockFormModal(timeString) {
+            activeTargetTime = timeString;
+            document.getElementById("blockModalSubtitle").textContent = `Setting lockout window for ${activeTargetDate} at ${timeString}`;
+            document.getElementById("blockReasonInput").value = "";
+            document.getElementById("blockSlotModal").style.display = "flex";
+        }
+
+        async function clearBlockedSlotDirectly(dateVal, timeVal) {
+            const success = await deleteAppointmentRow(dateVal, timeVal);
+            if (success) {
+                openDayAgenda(activeTargetDate);
+            } else {
+                alert("Failed to clear blocked time slot. Please try again.");
+            }
+        }
+
+        async function openPatientDossier(booking, timeString) {
+            activeTargetTime = timeString;
+            const dossierContent = document.getElementById("dossierCardContent");
+            dossierContent.innerHTML = `<p style="text-align:center; padding:15px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading profile fields...</p>`;
+            document.getElementById("patientDossierModal").style.display = "flex";
+
+            let whatsappNumber = "Not Available";
+            try {
+                const response = await fetch(`${SUPABASE_BASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(booking.user_email)}&select=whatsapp_number`, {
+                    method: "GET",
+                    headers: { "apikey": ANON_KEY, "Authorization": `Bearer ${localStorage.getItem("user_token")}` }
+                });
+                if (response.ok) {
+                    const userData = await response.json();
+                    if (userData && userData.length > 0 && userData[0].whatsapp_number) whatsappNumber = userData[0].whatsapp_number;
+                }
+            } catch (err) { console.error(err); }
+
+            dossierContent.innerHTML = `
+                <div class="dossier-field"><div class="dossier-label">Patient Name</div><div class="dossier-value">${booking.user_name}</div></div>
+                <div class="dossier-field"><div class="dossier-label">Account Email</div><div class="dossier-value">${booking.user_email}</div></div>
+                <div class="dossier-field">
+                    <div class="dossier-label">WhatsApp Link</div>
+                    <div class="dossier-value">
+                        <a href="https://wa.me/${whatsappNumber.replace(/\D/g, '')}" target="_blank" style="color:var(--primary-green); text-decoration:none; font-weight:700;">
+                            ${whatsappNumber} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="dossier-field"><div class="dossier-label">Time Segment</div><div class="dossier-value">${booking.date} at ${booking.time.substring(0, 5)}</div></div>
+                <div class="dossier-field"><div class="dossier-label">Reason for Visit</div><div class="dossier-textarea">${booking.description || 'No summary comments shared.'}</div></div>
+            `;
         }
     </script>
 </body>
