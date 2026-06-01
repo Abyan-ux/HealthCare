@@ -5,91 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Access - Hope Medical Center</title>
     
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310b981' d='M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm368.2-64.3c-20.9 0-38.3 12.1-46.2 29.5c-7.9-17.4-25.3-29.5-46.2-29.5c-27.3 0-49.4 22-49.4 49.3c0 42.4 43.1 82.2 87 114c4.6 3.3 10.1 5.1 15.7 5.1s11.1-1.8 15.7-5.1c43.8-31.8 87-71.6 87-114c0-27.3-22-49.3-49.4-49.3z'/></svg>">
     <script>
         (function() {
-            const TARGET_DOCTOR = "doctor@example.com"; // Set your doctor email here
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const activeEmail = localStorage.getItem("user_email") || urlParams.get("email");
-            const activeToken = localStorage.getItem("user_token") || urlParams.get("token");
+            const TARGET_DOCTOR = "doctor@example.com";
+            const activeEmail = localStorage.getItem("user_email");
+            const activeToken = localStorage.getItem("user_token");
 
             if (activeToken && activeEmail) {
                 if (activeEmail.toLowerCase() === TARGET_DOCTOR.toLowerCase()) {
-                    window.location.href = "doctor.html?token=" + encodeURIComponent(activeToken) + "&email=" + encodeURIComponent(activeEmail);
+                    window.location.href = "doctor.html";
                 }
             }
         })();
     </script>
 
     <style>
-        :root {
-            --primary-green: #10b981;
-            --dark-green: #064e3b;
-            --light-green: #ecfdf5;
-            --accent-green: #059669;
-            --text-gray: #4b5563;
-            --white: #ffffff;
-            --border-gray: #e5e7eb;
-            --error-red: #ef4444;
-        }
-
+        :root { --primary-green: #10b981; --dark-green: #064e3b; --light-green: #ecfdf5; --text-gray: #4b5563; --white: #ffffff; --border-gray: #e5e7eb; --error-red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { color: var(--text-gray); background: linear-gradient(135deg, var(--light-green) 0%, #f3f4f6 100%); min-height: 100vh; display: flex; flex-direction: column; }
-        
-        header { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 1000; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 18px 20px; }
-        .logo { font-size: 26px; font-weight: 800; color: var(--primary-green); display: flex; align-items: center; gap: 10px; text-decoration: none; }
-
+        header { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); padding: 18px 20px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 26px; font-weight: 800; color: var(--primary-green); text-decoration: none; }
         .portal-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px; }
         .auth-card { background: var(--white); max-width: 450px; width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(6, 78, 59, 0.06); border: 1px solid rgba(16, 185, 129, 0.1); padding: 40px 35px; }
-
         .auth-toggle { display: flex; background-color: #e5e7eb; padding: 4px; border-radius: 30px; margin-bottom: 35px; position: relative; }
-        .toggle-btn { flex: 1; background: transparent; border: none; padding: 12px; font-size: 16px; font-weight: 700; color: var(--text-gray); cursor: pointer; position: relative; z-index: 10; text-align: center; }
+        .toggle-btn { flex: 1; background: transparent; border: none; padding: 12px; font-size: 16px; font-weight: 700; color: var(--text-gray); cursor: pointer; text-align: center; z-index: 2; }
         .toggle-btn.active { color: var(--white); }
-        .toggle-slider { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background-color: var(--primary-green); border-radius: 25px; z-index: 1; transition: transform 0.25s ease; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
-
+        .toggle-slider { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background-color: var(--primary-green); border-radius: 25px; transition: transform 0.25s ease; z-index: 1; }
         .form-container { display: none; }
         .form-container.active { display: block; }
         .form-container h2 { font-size: 24px; margin-bottom: 8px; color: var(--dark-green); }
-        .form-container p { font-size: 14px; color: var(--text-gray); margin-bottom: 25px; }
-
+        .form-container p { font-size: 14px; margin-bottom: 25px; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--dark-green); }
         .input-field-wrapper { position: relative; display: flex; align-items: center; }
-        .input-field-wrapper i { position: absolute; left: 15px; color: #9ca3af; font-size: 16px; }
-        .input-field-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid var(--border-gray); border-radius: 10px; font-size: 15px; color: #1f2937; background-color: #f9fafb; outline: none; }
-        .input-field-wrapper input:focus { border-color: var(--primary-green); background-color: var(--white); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
-
+        .input-field-wrapper i { position: absolute; left: 15px; color: #9ca3af; }
+        .input-field-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid var(--border-gray); border-radius: 10px; font-size: 15px; background-color: #f9fafb; outline: none; }
+        .input-field-wrapper input:focus { border-color: var(--primary-green); background-color: #ffffff; }
         .submit-btn { width: 100%; background-color: var(--primary-green); color: var(--white); border: none; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; margin-top: 10px; }
-        .submit-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
-
-        .feedback-message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500; display: none; line-height: 1.4; word-break: break-word; }
-        .feedback-message.success { display: block; background-color: var(--light-green); color: var(--accent-green); border: 1px solid var(--primary-green); }
+        .feedback-message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; }
+        .feedback-message.success { display: block; background-color: var(--light-green); color: var(--primary-green); border: 1px solid var(--primary-green); }
         .feedback-message.error { display: block; background-color: #fee2e2; color: var(--error-red); border: 1px solid var(--error-red); }
-
-        /* Logged In Dashboard Styles */
         .logged-in-box { display: none; text-align: center; }
         .logged-in-box i { font-size: 48px; color: var(--primary-green); margin-bottom: 15px; }
-        .logged-in-box h3 { color: var(--dark-green); font-size: 22px; margin-bottom: 10px; }
-        .user-meta-info { background: #f9fafb; border: 1px solid var(--border-gray); padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; }
-        .meta-line { margin-bottom: 8px; font-size: 14px; }
-        .meta-line strong { color: var(--dark-green); }
+        .user-meta-info { background: #f9fafb; border: 1px solid var(--border-gray); padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; font-size: 14px; line-height: 2; }
         .nav-user-btn { display: block; width: 100%; text-align: center; background-color: var(--primary-green); color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 700; margin-bottom: 10px; }
         .logout-action-btn { width: 100%; background-color: #f3f4f6; color: #4b5563; border: 1px solid var(--border-gray); padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .logout-action-btn:hover { background-color: #fee2e2; color: var(--error-red); border-color: #fca5a5; }
-
-        footer { background-color: var(--dark-green); color: var(--light-green); text-align: center; padding: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="navbar">
-            <a href="index.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> HopeMedical</a>
-        </div>
+        <div class="navbar"><a href="index.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> HopeMedical</a></div>
     </header>
 
     <main class="portal-wrapper">
@@ -105,40 +74,38 @@
                 <div id="feedbackBox" class="feedback-message"></div>
 
                 <div class="form-container active" id="loginFormPane">
-                    <h2>Welcome Back</h2>
-                    <p>Please access your dashboard account.</p>
+                    <h2>Welcome Back</h2><p>Please access your dashboard account.</p>
                     <form id="internalLoginForm">
                         <div class="input-group">
                             <label>Email Address</label>
-                            <div class="input-field-wrapper"><input type="email" id="loginEmail" placeholder="name@example.com" required><i class="fa-solid fa-envelope"></i></div>
+                            <div class="input-field-wrapper"><input type="email" id="loginEmail" required><i class="fa-solid fa-envelope"></i></div>
                         </div>
                         <div class="input-group">
                             <label>Password</label>
-                            <div class="input-field-wrapper"><input type="password" id="loginPassword" placeholder="••••••••" required><i class="fa-solid fa-lock"></i></div>
+                            <div class="input-field-wrapper"><input type="password" id="loginPassword" required><i class="fa-solid fa-lock"></i></div>
                         </div>
                         <button type="submit" class="submit-btn" id="loginBtnText">Secure Login</button>
                     </form>
                 </div>
 
                 <div class="form-container" id="registerFormPane">
-                    <h2>Create Account</h2>
-                    <p>Register to setup your custom patient profile configuration.</p>
+                    <h2>Create Account</h2><p>Register to setup your custom patient profile configuration.</p>
                     <form id="internalRegisterForm">
                         <div class="input-group">
                             <label>Full Name</label>
-                            <div class="input-field-wrapper"><input type="text" id="regName" placeholder="John Doe" required><i class="fa-solid fa-user"></i></div>
+                            <div class="input-field-wrapper"><input type="text" id="regName" required><i class="fa-solid fa-user"></i></div>
                         </div>
                         <div class="input-group">
                             <label>Email Address</label>
-                            <div class="input-field-wrapper"><input type="email" id="regEmail" placeholder="name@example.com" required><i class="fa-solid fa-envelope"></i></div>
+                            <div class="input-field-wrapper"><input type="email" id="regEmail" required><i class="fa-solid fa-envelope"></i></div>
                         </div>
                         <div class="input-group">
                             <label>WhatsApp Number</label>
-                            <div class="input-field-wrapper"><input type="tel" id="regWhatsapp" placeholder="+1 (555) 000-0000" required><i class="fa-brands fa-whatsapp"></i></div>
+                            <div class="input-field-wrapper"><input type="tel" id="regWhatsapp" required><i class="fa-brands fa-whatsapp"></i></div>
                         </div>
                         <div class="input-group">
                             <label>Password</label>
-                            <div class="input-field-wrapper"><input type="password" id="regPassword" placeholder="Minimum 6 characters" minlength="6" required><i class="fa-solid fa-lock"></i></div>
+                            <div class="input-field-wrapper"><input type="password" id="regPassword" minlength="6" required><i class="fa-solid fa-lock"></i></div>
                         </div>
                         <button type="submit" class="submit-btn" id="regBtnText">Complete Registration</button>
                     </form>
@@ -148,14 +115,11 @@
             <div id="loggedInDashboardState" class="logged-in-box">
                 <i class="fa-solid fa-circle-check"></i>
                 <h3>Session Active</h3>
-                <p>You are safely authenticated into the clinical system.</p>
-                
                 <div class="user-meta-info">
-                    <div class="meta-line"><strong>Logged in as:</strong> <span id="sessionDisplayUser">Loading...</span></div>
-                    <div class="meta-line"><strong>WhatsApp:</strong> <span id="sessionDisplayPhone">Loading...</span></div>
-                    <div class="meta-line"><strong>Email:</strong> <span id="sessionDisplayEmail">Loading...</span></div>
+                    <div><strong>Logged in as:</strong> <span id="sessionDisplayUser">Loading...</span></div>
+                    <div><strong>WhatsApp:</strong> <span id="sessionDisplayPhone">Loading...</span></div>
+                    <div><strong>Email:</strong> <span id="sessionDisplayEmail">Loading...</span></div>
                 </div>
-
                 <a href="user.html" class="nav-user-btn">Go to Appointments Menu</a>
                 <button type="button" class="logout-action-btn" id="sessionLogoutBtn">Sign Out</button>
             </div>
@@ -163,58 +127,38 @@
         </div>
     </main>
 
-    <footer><p>© 2026 Hope Medical Center. All rights reserved.</p></footer>
-
     <script>
+        const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co/auth/v1";
+        const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8";
+        const CONSOLE_DOCTOR_EMAIL = "doctor@example.com";
+
         document.addEventListener("DOMContentLoaded", () => {
             const loginTab = document.getElementById("loginTab");
             const registerTab = document.getElementById("registerTab");
             const toggleSlider = document.getElementById("toggleSlider");
             const loginFormPane = document.getElementById("loginFormPane");
             const registerFormPane = document.getElementById("registerFormPane");
+            const feedbackBox = document.getElementById("feedbackBox");
 
-            // Evaluate local authorization state parameters on page loading
-            if(localStorage.getItem("user_token") && localStorage.getItem("user_email")) {
+            if(localStorage.getItem("user_token")) {
                 document.getElementById("authInteractiveGroup").style.display = "none";
-                document.getElementById("sessionDisplayUser").textContent = localStorage.getItem("user_name") || "Patient Profile";
+                document.getElementById("sessionDisplayUser").textContent = localStorage.getItem("user_name");
                 document.getElementById("sessionDisplayEmail").textContent = localStorage.getItem("user_email");
-                document.getElementById("sessionDisplayPhone").textContent = localStorage.getItem("user_whatsapp") || "None Provided";
+                document.getElementById("sessionDisplayPhone").textContent = localStorage.getItem("user_whatsapp");
                 document.getElementById("loggedInDashboardState").style.display = "block";
             }
 
-            function switchView(showLogin) {
-                document.getElementById("feedbackBox").style.display = "none";
-                if (showLogin) {
-                    loginTab.classList.add("active");
-                    registerTab.classList.remove("active");
-                    toggleSlider.style.transform = "translateX(0%)";
-                    registerFormPane.classList.remove("active");
-                    loginFormPane.classList.add("active");
-                } else {
-                    registerTab.classList.add("active");
-                    loginTab.classList.remove("active");
-                    toggleSlider.style.transform = "translateX(100%)";
-                    loginFormPane.classList.remove("active");
-                    registerFormPane.classList.add("active");
-                }
-            }
-            loginTab.addEventListener("click", () => switchView(true));
-            registerTab.addEventListener("click", () => switchView(false));
-
-            document.getElementById("sessionLogoutBtn").addEventListener("click", () => {
-                localStorage.clear();
-                window.location.href = "login.html";
+            loginTab.addEventListener("click", () => {
+                toggleSlider.style.transform = "translateX(0%)";
+                registerFormPane.classList.remove("active");
+                loginFormPane.classList.add("active");
             });
-        });
-    </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co/auth/v1";
-            const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8";
-            const feedbackBox = document.getElementById("feedbackBox");
-            
-            const CONSOLE_DOCTOR_EMAIL = "doctor@example.com"; // Set your doctor email here
+            registerTab.addEventListener("click", () => {
+                toggleSlider.style.transform = "translateX(100%)";
+                loginFormPane.classList.remove("active");
+                registerFormPane.classList.add("active");
+            });
 
             function displayAlert(message, isSuccess) {
                 feedbackBox.className = "feedback-message " + (isSuccess ? "success" : "error");
@@ -222,21 +166,20 @@
                 feedbackBox.style.display = "block";
             }
 
-            // Fixed Signup Route mapping payload structure directly to HTTP specification requirements
+            // Registration Action Handler (Fixed payload encapsulation)
             document.getElementById("internalRegisterForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const btn = document.getElementById("regBtnText");
-                btn.textContent = "Processing..."; btn.disabled = true;
+                document.getElementById("regBtnText").textContent = "Processing...";
 
                 try {
                     const response = await fetch(`${SUPABASE_BASE_URL}/signup`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "apikey": ANON_KEY, "Authorization": `Bearer ${ANON_KEY}` },
+                        headers: { "Content-Type": "application/json", "apikey": ANON_KEY },
                         body: JSON.stringify({
                             email: document.getElementById("regEmail").value.trim().toLowerCase(),
                             password: document.getElementById("regPassword").value,
-                            // CRITICAL FIX: Put user_metadata matching HTTP post schema directly at root level
-                            user_metadata: { 
+                            // Structured explicitly under the metadata identifier to be processed by the API endpoint
+                            data: { 
                                 full_name: document.getElementById("regName").value.trim(), 
                                 whatsapp_number: document.getElementById("regWhatsapp").value.trim() 
                             }
@@ -244,65 +187,56 @@
                     });
 
                     const result = await response.json();
-                    btn.textContent = "Complete Registration"; btn.disabled = false;
+                    document.getElementById("regBtnText").textContent = "Complete Registration";
 
                     if (!response.ok) {
-                        displayAlert("ERROR: " + (result.msg || result.error_description), false);
+                        displayAlert("Error: " + result.msg, false);
                     } else {
-                        displayAlert("Profile constructed successfully! Switch tabs to login.", true);
+                        displayAlert("Registration complete! You can now log in.", true);
                         document.getElementById("internalRegisterForm").reset();
                     }
                 } catch(err) {
-                    btn.textContent = "Complete Registration"; btn.disabled = false;
-                    displayAlert("Connection level block: " + err.message, false);
+                    displayAlert("Network error: " + err.message, false);
                 }
             });
 
-            // Login System Payload Resolver 
+            // Authentication Login Handler
             document.getElementById("internalLoginForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const btn = document.getElementById("loginBtnText");
-                btn.textContent = "Verifying Credentials..."; btn.disabled = true;
-
-                const inputEmailCleaned = document.getElementById("loginEmail").value.trim().toLowerCase();
+                const inputEmail = document.getElementById("loginEmail").value.trim().toLowerCase();
 
                 try {
                     const response = await fetch(`${SUPABASE_BASE_URL}/token?grant_type=password`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "apikey": ANON_KEY, "Authorization": `Bearer ${ANON_KEY}` },
-                        body: JSON.stringify({ email: inputEmailCleaned, password: document.getElementById("loginPassword").value })
+                        headers: { "Content-Type": "application/json", "apikey": ANON_KEY },
+                        body: JSON.stringify({ email: inputEmail, password: document.getElementById("loginPassword").value })
                     });
 
                     const result = await response.json();
-                    btn.textContent = "Secure Login"; btn.disabled = false;
 
                     if (!response.ok) {
-                        displayAlert("Authentication Failed: " + (result.error_description || result.msg), false);
+                        displayAlert("Login Failed: " + (result.error_description || result.msg), false);
                     } else {
-                        // UNPACK UPGRADED JSON SCHEMAS FROM LIVE PAYLOADS
-                        const profileMetadata = result.user.user_metadata || {};
-                        const parsedFullName = profileMetadata.full_name || "Patient Member";
-                        const parsedWhatsApp = profileMetadata.whatsapp_number || "Not Provided";
-
+                        const meta = result.user.user_metadata || {};
                         localStorage.setItem("user_token", result.access_token);
-                        localStorage.setItem("user_email", inputEmailCleaned);
-                        localStorage.setItem("user_name", parsedFullName);
-                        localStorage.setItem("user_whatsapp", parsedWhatsApp);
+                        localStorage.setItem("user_email", inputEmail);
+                        localStorage.setItem("user_name", meta.full_name || "Patient Member");
+                        localStorage.setItem("user_whatsapp", meta.whatsapp_number || "Not Provided");
 
-                        if (inputEmailCleaned === CONSOLE_DOCTOR_EMAIL.toLowerCase()) {
-                            displayAlert("Doctor Account Identified. Syncing System...", true);
-                            setTimeout(() => { 
-                                window.location.href = "doctor.html?token=" + encodeURIComponent(result.access_token) + "&email=" + encodeURIComponent(inputEmailCleaned); 
-                            }, 1000);
+                        if (inputEmail === CONSOLE_DOCTOR_EMAIL.toLowerCase()) {
+                            window.location.href = "doctor.html";
                         } else {
-                            displayAlert("Login Successful! Initializing workspace panels...", true);
-                            setTimeout(() => { location.reload(); }, 1000);
+                            location.reload();
                         }
                     }
                 } catch(err) {
-                    btn.textContent = "Secure Login"; btn.disabled = false;
-                    displayAlert("Pipeline transmission block: " + err.message, false);
+                    displayAlert("Error connecting: " + err.message, false);
                 }
+            });
+
+            document.getElementById("sessionLogoutBtn").addEventListener("click", () => {
+                localStorage.clear();
+                window.location.href = "login.html";
             });
         });
     </script>
