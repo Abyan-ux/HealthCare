@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Portal - Hope Medical Center</title>
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #064e3b;
+            --light-green: #ecfdf5;
+            --text-gray: #4b5563;
+            --white: #ffffff;
+            --border-gray: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        /* Enforces initial blank container window prior to authorization */
+        body { 
+            color: var(--text-gray); 
+            background-color: #f3f4f6; 
+            min-height: 100vh; 
+            display: none; 
+            flex-direction: column; 
+        }
+
+        header { background-color: var(--dark-green); color: var(--white); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 15px 20px; }
+        .logo { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        
+        .doctor-profile { display: flex; align-items: center; gap: 15px; }
+        .doctor-info { text-align: right; }
+        .doctor-name { font-weight: 700; font-size: 16px; }
+        .doctor-title { font-size: 12px; color: var(--primary-green); font-weight: 600; }
+        
+        .logout-btn { background-color: transparent; border: 1px solid var(--primary-green); color: var(--white); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .logout-btn:hover { background-color: var(--primary-green); }
+
+        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 30px 20px; }
+        .page-header { margin-bottom: 25px; }
+        .page-header h1 { color: var(--dark-green); font-size: 28px; }
+
+        .calendar-year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .month-card { background: var(--white); border-radius: 12px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-gray); }
+        .month-title { color: var(--dark-green); font-size: 18px; font-weight: 700; margin-bottom: 12px; text-align: center; border-bottom: 2px solid var(--light-green); padding-bottom: 6px; }
+        .weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 4px; }
+        .day-cell { padding: 8px 0; font-size: 14px; font-weight: 500; border-radius: 6px; color: #1f2937; }
+        .day-cell:not(.empty):hover { background-color: var(--light-green); color: var(--dark-green); cursor: pointer; }
+        .day-cell.empty { background: transparent; }
+
+        footer { background-color: #e5e7eb; text-align: center; padding: 15px; font-size: 13px; color: var(--text-gray); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo"><i class="fa-solid fa-user-doctor"></i> Medical Management Console</div>
+            <div class="doctor-profile">
+                <div class="doctor-info">
+                    <div class="doctor-name" id="docNameDisplay">Authorized Doctor</div>
+                    <div class="doctor-title">Primary Physician</div>
+                </div>
+                <button type="button" class="logout-btn" id="portalLogout">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Annual Schedule Dashboard (2026)</h1>
+        </div>
+        <div class="calendar-year-grid" id="calendarYearGrid"></div>
+    </main>
+
+    <footer><p>© 2026 Hope Medical Center. Internal Dashboard Utility.</p></footer>
+
+    <script>
+        // Adjust this string value to match your authorized test configuration directly
+        const AUTHORIZED_DOCTOR_EMAIL = "abyancoandulloo@gmail.com"; 
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("user_token");
+            const profileRaw = localStorage.getItem("user_profile");
+
+            // Check if user session data exists
+            if (!token || !profileRaw) {
+                alert("Access Denied: Please log in via the credential gateway.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const profile = JSON.parse(profileRaw);
+
+            // Case Insensitive Validation
+            if (!profile.email || profile.email.toLowerCase() !== AUTHORIZED_DOCTOR_EMAIL.toLowerCase()) {
+                alert("Security Notification: Unauthorized access detected.");
+                localStorage.clear(); 
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Expose structural markup container after validating identity access
+            document.getElementById("docNameDisplay").textContent = profile.full_name;
+            document.body.style.display = "flex";
+
+            // Render calendar grid component mapping
+            generateYearCalendar(2026);
+
+            // Explicit Sign Out Action
+            document.getElementById("portalLogout").addEventListener("click", () => {
+                localStorage.clear();
+                window.location.href = "login.html";
+            });
+        });
+
+        function generateYearCalendar(year) {
+            const grid = document.getElementById("calendarYearGrid");
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+            months.forEach((month, index) => {
+                const card = document.createElement("div");
+                card.className = "month-card";
+
+                const title = document.createElement("div");
+                title.className = "month-title";
+                title.textContent = month;
+                card.appendChild(title);
+
+                const weekdaysRow = document.createElement("div");
+                weekdaysRow.className = "weekdays-grid";
+                weekdays.forEach(d => {
+                    const cell = document.createElement("div");
+                    cell.textContent = d;
+                    weekdaysRow.appendChild(cell);
+                });
+                card.appendChild(weekdaysRow);
+
+                const daysGrid = document.createElement("div");
+                daysGrid.className = "days-grid";
+
+                const firstDayIndex = new Date(year, index, 1).getDay();
+                const totalDays = new Date(year, index + 1, 0).getDate();
+
+                for (let i = 0; i < firstDayIndex; i++) {
+                    const emptyCell = document.createElement("div");
+                    emptyCell.className = "day-cell empty";
+                    daysGrid.appendChild(emptyCell);
+                }
+
+                for (let day = 1; day <= totalDays; day++) {
+                    const dayCell = document.createElement("div");
+                    dayCell.className = "day-cell";
+                    dayCell.textContent = day;
+                    daysGrid.appendChild(dayCell);
+                }
+
+                card.appendChild(daysGrid);
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

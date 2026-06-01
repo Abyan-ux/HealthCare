@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope Medical Center</title>
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CONFIGURATION & ANIMATIONS --- */
+        :root {
+            --primary-green: #10b981;    /* Vibrant Emerald */
+            --dark-green: #064e3b;       /* Deep Forest Green for text/headers */
+            --light-green: #ecfdf5;      /* Soft Mint background */
+            --accent-green: #059669;     /* Medium Emerald for hovers */
+            --text-gray: #4b5563;
+            --white: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* --- GENERAL RESETS & TYPOGRAPHY --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            color: var(--text-gray);
+            background-color: #f9fafb;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--dark-green);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        /* --- STICKY NAVIGATION BAR --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 20px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .logo i {
+            animation: pulseSlow 3s infinite ease-in-out;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            padding: 4px 0;
+            transition: color 0.3s ease;
+        }
+
+        /* Elegant underline slide animation on hover */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-green);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .login-btn {
+            background-color: var(--primary-green);
+            color: var(--white) !important;
+            padding: 10px 24px;
+            border-radius: 30px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease !important;
+        }
+
+        .login-btn:hover {
+            background-color: var(--accent-green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .login-btn::after {
+            display: none !important;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-green);
+            transition: transform 0.3s ease;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(6, 78, 59, 0.6), rgba(6, 78, 59, 0.4)), 
+                        url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053') no-repeat center center/cover;
+            height: 75vh;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: var(--white);
+        }
+
+        .hero-content {
+            max-width: 650px;
+            margin-left: 10%;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            color: var(--white);
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero-content p {
+            font-size: 19px;
+            margin-bottom: 35px;
+            color: var(--light-green);
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        }
+
+        .cta-btn {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: var(--white);
+            color: var(--dark-green);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        /* --- GENERAL INFO SECTION --- */
+        .info-section {
+            background: linear-gradient(180deg, var(--white) 0%, var(--light-green) 100%);
+        }
+
+        .info-section h2, .contact-section h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            position: relative;
+        }
+
+        /* Clean indicator line under section titles */
+        .info-section h2::after, .contact-section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-green);
+            margin: 12px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(6, 78, 59, 0.08);
+            border-color: var(--primary-green);
+        }
+
+        .card i {
+            font-size: 45px;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover i {
+            transform: scale(1.1);
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        /* --- CONTACT & GOOGLE MAPS SECTION --- */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            background: var(--white);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .contact-info h3 {
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .contact-info p {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+        }
+
+        .contact-info i {
+            color: var(--primary-green);
+            font-size: 18px;
+            background-color: var(--light-green);
+            padding: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-container {
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .map-container:hover {
+            transform: scale(1.01);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--dark-green);
+            color: var(--light-green);
+            text-align: center;
+            padding: 30px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: var(--white);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+                padding: 30px 20px;
+                gap: 20px;
+                animation: fadeIn 0.4s ease;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .login-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .hero-content {
+                margin-left: 0;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .contact-grid {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-heart-pulse"></i> HopeMedical
+            </div>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="doctor.html">Doctors</a></li>
+                    <li><a href="user.html">User</a></li>
+
+                    <li><a href="#booking">Booking</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="login.html" class="login-btn">Login</a></li>
+                </ul>
+            </nav>
+            <div class="menu-toggle" id="mobileMenu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Health Is Our Top Priority</h1>
+            <p>Providing world-class, compassionate healthcare services for you and your family. Our team of expert specialists is here to support you every step of the way.</p>
+            <a href="#booking" class="cta-btn">Book an Appointment</a>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <div class="container">
+            <h2>Why Choose Us?</h2>
+            <div class="info-cards">
+                <div class="card">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <h3>Expert Doctors</h3>
+                    <p>Our physicians are board-certified specialists dedicated to exceptional patient care.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-clock"></i>
+                    <h3>24/7 Emergency</h3>
+                    <p>We are always ready to handle urgent medical situations with round-the-clock care.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-microscope"></i>
+                    <h3>Modern Facilities</h3>
+                    <p>Equipped with the latest medical technology for accurate diagnosis and treatment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contact & Location</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <p><i class="fa-solid fa-location-dot"></i> 123 Healthcare Blvd, Medical District</p>
+                    <p><i class="fa-solid fa-phone"></i> +1 (555) 019-2834</p>
+                    <p><i class="fa-solid fa-envelope"></i> info@hopemedical.com</p>
+                    <p><i class="fa-solid fa-clock"></i> Mon - Sat: 8:00 AM - 8:00 PM</p>
+                </div>
+                <div class="map-container">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=hospital&t=&z=13&ie=UTF-8&iwloc=&output=embed" 
+                        width="100%" 
+                        height="300" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Hope Medical Center. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const mobileMenu = document.getElementById("mobileMenu");
+            const navLinks = document.getElementById("navLinks");
+
+            // Toggle navigation menu visibility
+            mobileMenu.addEventListener("click", () => {
+                navLinks.classList.toggle("active");
+                
+                // Animated icon transition effect (Bars <-> X)
+                const icon = mobileMenu.querySelector("i");
+                if (navLinks.classList.contains("active")) {
+                    mobileMenu.style.transform = "rotate(90deg)";
+                    setTimeout(() => {
+                        icon.classList.remove("fa-bars");
+                        icon.classList.add("fa-xmark");
+                    }, 150);
+                } else {
+                    mobileMenu.style.transform = "rotate(0deg)";
+                    setTimeout(() => {
+                        icon.classList.remove("fa-xmark");
+                        icon.classList.add("fa-bars");
+                    }, 150);
+                }
+            });
+
+            // Automatically clean up menu dropdown when a mobile link is tapped
+            const links = navLinks.querySelectorAll("a");
+            links.forEach(link => {
+                link.addEventListener("click", () => {
+                    navLinks.classList.remove("active");
+                    mobileMenu.style.transform = "rotate(0deg)";
+                    const icon = mobileMenu.querySelector("i");
+                    icon.classList.remove("fa-xmark");
+                    icon.classList.add("fa-bars");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

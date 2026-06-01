@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - Hope Medical Center</title>
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #064e3b;
+            --light-green: #ecfdf5;
+            --text-gray: #4b5563;
+            --white: #ffffff;
+            --border-gray: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { color: var(--text-gray); background-color: #f3f4f6; min-height: 100vh; display: none; flex-direction: column; }
+
+        header { background-color: var(--white); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 15px 20px; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary-green); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        
+        .logout-btn { background-color: transparent; border: 1px solid var(--primary-green); color: var(--primary-green); padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .logout-btn:hover { background-color: var(--primary-green); color: var(--white); }
+
+        .container { flex: 1; max-width: 800px; width: 100%; margin: 40px auto; padding: 0 20px; }
+        
+        .profile-card { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-gray); margin-bottom: 30px; }
+        .profile-card h2 { color: var(--dark-green); margin-bottom: 20px; font-size: 22px; border-bottom: 2px solid var(--light-green); padding-bottom: 10px; }
+        
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .info-item { background-color: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid var(--border-gray); }
+        .info-label { font-size: 12px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .info-value { font-size: 16px; font-weight: 600; color: #1f2937; }
+
+        .booking-box { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-gray); }
+        .booking-box h2 { color: var(--dark-green); margin-bottom: 20px; }
+        
+        footer { background-color: var(--dark-green); color: var(--light-green); text-align: center; padding: 20px; font-size: 14px; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <a href="login.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> HopeMedical Dashboard</a>
+            <button type="button" class="logout-btn" id="logoutBtn">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="profile-card">
+            <h2><i class="fa-solid fa-id-card"></i> Verified Patient Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value" id="profileName">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="profileEmail">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Contact (WhatsApp)</div>
+                    <div class="info-value" id="profilePhone">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Database User ID</div>
+                    <div class="info-value" id="profileId" style="font-size: 12px; font-family: monospace; word-break: break-all;">Loading...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-box">
+            <h2>Schedule Appointments Management</h2>
+            <p>Your database metadata package is fully synced. Select your appointment preferences below.</p>
+        </section>
+
+    </main>
+
+    <footer><p>© 2026 Hope Medical Center. Secure Patient Portal.</p></footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co";
+            
+            const token = localStorage.getItem("user_token");
+            const email = localStorage.getItem("user_email");
+
+            if (!token || !email) {
+                alert("Please log in to review account items.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Load saved fallback tokens immediately to prevent screen stutter
+            document.getElementById("profileEmail").textContent = email;
+            document.getElementById("profileName").textContent = localStorage.getItem("user_name") || "Loading User...";
+            document.getElementById("profilePhone").textContent = localStorage.getItem("user_whatsapp") || "Loading Contact...";
+            document.body.style.display = "flex";
+
+            // Query live user schema validation engine parameters directly from remote instance endpoints
+            try {
+                const response = await fetch(`${SUPABASE_BASE_URL}/auth/v1/user`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    
+                    // DEEP EXTRACTING METADATA OBJECT PROPERTIES
+                    const databaseMetadata = userData.user_metadata || {};
+                    const finalLiveName = databaseMetadata.full_name || localStorage.getItem("user_name") || "Not Configured";
+                    const finalLivePhone = databaseMetadata.whatsapp_number || localStorage.getItem("user_whatsapp") || "Not Configured";
+                    const databaseUuid = userData.id;
+
+                    // Apply parsed runtime layout variables directly onto target elements
+                    document.getElementById("profileName").textContent = finalLiveName;
+                    document.getElementById("profilePhone").textContent = finalLivePhone;
+                    document.getElementById("profileId").textContent = databaseUuid;
+
+                    // Sync storage snapshots to minimize network overhead on dashboard refresh cycles
+                    localStorage.setItem("user_name", finalLiveName);
+                    localStorage.setItem("user_whatsapp", finalLivePhone);
+                } else {
+                    localStorage.clear();
+                    window.location.href = "login.html";
+                }
+            } catch (err) {
+                console.error("Background data aggregation paused:", err);
+            }
+
+            document.getElementById("logoutBtn").addEventListener("click", () => {
+                localStorage.clear();
+                window.location.href = "login.html";
+            });
+        });
+    </script>
+</body>
+</html>
