@@ -3,149 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Portal - Hope Medical Center</title>
+    <title>User Dashboard - Hope Medical Center</title>
     
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310b981' d='M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm368.2-64.3c-20.9 0-38.3 12.1-46.2 29.5c-7.9-17.4-25.3-29.5-46.2-29.5c-27.3 0-49.4 22-49.4 49.3c0 42.4 43.1 82.2 87 114c4.6 3.3 10.1 5.1 15.7 5.1s11.1-1.8 15.7-5.1c43.8-31.8 87-71.6 87-114c0-27.3-22-49.3-49.4-49.3z'/></svg>">
     <style>
         :root {
             --primary-green: #10b981;
             --dark-green: #064e3b;
             --light-green: #ecfdf5;
+            --mint-bg: #f0fdf4;
+            --text-main: #1f2937;
             --text-gray: #4b5563;
+            --text-muted: #6b7280;
             --white: #ffffff;
             --border-gray: #e5e7eb;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 30px rgba(6, 78, 59, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { color: var(--text-gray); background-color: #f3f4f6; min-height: 100vh; display: none; flex-direction: column; }
+        
+        body { 
+            color: var(--text-main); 
+            background: radial-gradient(circle at top right, var(--mint-bg) 0%, #f3f4f6 100%);
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
 
-        header { background-color: var(--white); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 15px 20px; }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary-green); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        
-        .logout-btn { background-color: transparent; border: 1px solid var(--primary-green); color: var(--primary-green); padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .logout-btn:hover { background-color: var(--primary-green); color: var(--white); }
+        /* Nav Bar Hierarchy matches index / doctor portal look */
+        header { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-sm); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+        }
 
-        .container { flex: 1; max-width: 800px; width: 100%; margin: 40px auto; padding: 0 20px; }
-        
-        .profile-card { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-gray); margin-bottom: 30px; }
-        .profile-card h2 { color: var(--dark-green); margin-bottom: 20px; font-size: 22px; border-bottom: 2px solid var(--light-green); padding-bottom: 10px; }
-        
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .info-item { background-color: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid var(--border-gray); }
-        .info-label { font-size: 12px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .info-value { font-size: 16px; font-weight: 600; color: #1f2937; }
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 16px 24px; 
+        }
 
-        .booking-box { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-gray); }
-        .booking-box h2 { color: var(--dark-green); margin-bottom: 20px; }
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--dark-green); 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: var(--primary-green); }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-menu li a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .nav-menu li a:hover, .nav-menu li a.active { color: var(--primary-green); }
+
+        .nav-menu li a.login-btn {
+            background-color: transparent; 
+            border: 1.5px solid var(--primary-green); 
+            color: var(--primary-green); 
+            padding: 8px 20px; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 14px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .nav-menu li a.login-btn:hover { 
+            background-color: var(--primary-green); 
+            color: var(--white);
+        }
+
+        .user-identity-badge {
+            background: var(--light-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .menu-toggle .bar { width: 25px; height: 3px; background-color: var(--dark-green); border-radius: 3px; }
+
+        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 30px; }
+        .page-header { margin-bottom: 5px; }
+        .page-header h1 { color: var(--dark-green); font-size: 32px; font-weight: 800; }
+
+        /* Profile Details Card */
+        .profile-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(229, 231, 235, 0.6);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .detail-group { display: flex; flex-direction: column; gap: 5px; }
+        .detail-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .detail-value { font-size: 16px; font-weight: 600; color: var(--text-main); }
+
+        /* Appointments Container Styles */
+        .appointments-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(229, 231, 235, 0.6);
+        }
+        .card-title { color: var(--dark-green); font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--light-green); padding-bottom: 8px; }
         
-        footer { background-color: var(--dark-green); color: var(--light-green); text-align: center; padding: 20px; font-size: 14px; margin-top: auto; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        th { background-color: #f9fafb; color: var(--text-gray); font-weight: 700; padding: 12px 16px; border-bottom: 2px solid var(--border-gray); }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border-gray); color: var(--text-main); font-weight: 500; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #fafafa; }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; background-color: var(--light-green); color: var(--dark-green); }
+        .no-data { text-align: center; padding: 30px; color: var(--text-gray); font-weight: 500; }
+        
+        footer { background-color: #e5e7eb; text-align: center; padding: 18px; font-size: 13px; color: var(--text-gray); margin-top: auto; }
+
+        @media (max-width: 992px) {
+            .menu-toggle { display: flex; }
+            .nav-menu { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); flex-direction: column; padding: 24px; gap: 20px; display: none; box-shadow: var(--shadow-md); }
+            .nav-menu.open { display: flex; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="navbar">
-            <a href="login.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> HopeMedical Dashboard</a>
-            <button type="button" class="logout-btn" id="logoutBtn">Sign Out</button>
-        </div>
+        <nav class="navbar">
+            <a href="index.html" class="logo"><i class="fa-solid fa-laptop-medical"></i> Console</a>
+            <button class="menu-toggle" id="menuToggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="doctor.html">Doctor Hub</a></li>
+                <li><a href="user.html" class="active">Profile</a></li>
+                <li><a href="booking.html">Book appointment</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li>
+                    <div class="user-identity-badge">
+                        <i class="fa-solid fa-user-circle"></i> 
+                        <span id="userNameDisplay">Welcome Patient</span>
+                    </div>
+                </li>
+                <li><a href="login.html" class="login-btn" id="portalLogout">Sign Out</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <main class="container">
-        
-        <section class="profile-card">
-            <h2><i class="fa-solid fa-id-card"></i> Verified Patient Information</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Full Name</div>
-                    <div class="info-value" id="profileName">Loading...</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Email Address</div>
-                    <div class="info-value" id="profileEmail">Loading...</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Contact (WhatsApp)</div>
-                    <div class="info-value" id="profilePhone">Loading...</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Database User ID</div>
-                    <div class="info-value" id="profileId" style="font-size: 12px; font-family: monospace; word-break: break-all;">Loading...</div>
-                </div>
+    <main>
+        <div class="page-header">
+            <h1>Personal Identity & File Record</h1>
+            <p style="color: var(--text-gray); font-size: 14px; margin-top: 5px;" id="userRoleTitle">Registered Account Profile Dashboard</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="detail-group">
+                <div class="detail-label">Full Profile Name</div>
+                <div class="detail-value" id="profileFullName">-</div>
             </div>
-        </section>
+            <div class="detail-group">
+                <div class="detail-label">Registered Electronic Email</div>
+                <div class="detail-value" id="profileEmail">-</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">WhatsApp Contact Handle</div>
+                <div class="detail-value" id="profileWhatsApp">Loading...</div>
+            </div>
+        </div>
 
-        <section class="booking-box">
-            <h2>Schedule Appointments Management</h2>
-            <p>Your database metadata package is fully synced. Select your appointment preferences below.</p>
-        </section>
-
+        <div class="appointments-card">
+            <div class="card-title"><i class="fa-solid fa-calendar-check" style="color: var(--primary-green);"></i> Scheduled Clinical Appointments</div>
+            <div class="table-responsive">
+                <table id="appointmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Scheduled Date</th>
+                            <th>Time Segment</th>
+                            <th>Reason/Description Summary</th>
+                            <th>Booking Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <tr>
+                            <td colspan="4" class="no-data"><i class="fa-solid fa-spinner fa-spin"></i> Retrieving live schedule indices...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
-    <footer><p>© 2026 Hope Medical Center. Secure Patient Portal.</p></footer>
+    <footer><p>© 2026 Hope Medical Center. Internal Dashboard Utility.</p></footer>
 
     <script>
+        const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co";
+        const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8";
+
         document.addEventListener("DOMContentLoaded", async () => {
-            const SUPABASE_BASE_URL = "https://ylganbeyiuikbxmtsdha.supabase.co";
-            
             const token = localStorage.getItem("user_token");
-            const email = localStorage.getItem("user_email");
+            const profileRaw = localStorage.getItem("user_profile");
 
-            if (!token || !email) {
-                alert("Please log in to review account items.");
-                window.location.href = "login.html";
-                return;
+            const backupEmail = localStorage.getItem("user_email");
+            const backupName = localStorage.getItem("user_name");
+
+            // Navigation menu click listener
+            document.getElementById("menuToggle").addEventListener("click", () => {
+                document.getElementById("navMenu").classList.toggle("open");
+            });
+
+            let profile = {};
+
+            if (profileRaw) {
+                try { profile = JSON.parse(profileRaw); } catch (e) { console.error(e); }
             }
 
-            // Load saved fallback tokens immediately to prevent screen stutter
-            document.getElementById("profileEmail").textContent = email;
-            document.getElementById("profileName").textContent = localStorage.getItem("user_name") || "Loading User...";
-            document.getElementById("profilePhone").textContent = localStorage.getItem("user_whatsapp") || "Loading Contact...";
-            document.body.style.display = "flex";
+            if (!profile.email && backupEmail) profile.email = backupEmail;
+            if (!profile.full_name && backupName) profile.full_name = backupName;
 
-            // Query live user schema validation engine parameters directly from remote instance endpoints
-            try {
-                const response = await fetch(`${SUPABASE_BASE_URL}/auth/v1/user`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsZ2FuYmV5aXVpa2J4bXRzZGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNzAxNzUsImV4cCI6MjA5NTg0NjE3NX0.S0gUc-w_EwiFPVkqLsUFOfa4A7su8na6kCk9j7eI3-8",
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    const userData = await response.json();
-                    
-                    // DEEP EXTRACTING METADATA OBJECT PROPERTIES
-                    const databaseMetadata = userData.user_metadata || {};
-                    const finalLiveName = databaseMetadata.full_name || localStorage.getItem("user_name") || "Not Configured";
-                    const finalLivePhone = databaseMetadata.whatsapp_number || localStorage.getItem("user_whatsapp") || "Not Configured";
-                    const databaseUuid = userData.id;
-
-                    // Apply parsed runtime layout variables directly onto target elements
-                    document.getElementById("profileName").textContent = finalLiveName;
-                    document.getElementById("profilePhone").textContent = finalLivePhone;
-                    document.getElementById("profileId").textContent = databaseUuid;
-
-                    // Sync storage snapshots to minimize network overhead on dashboard refresh cycles
-                    localStorage.setItem("user_name", finalLiveName);
-                    localStorage.setItem("user_whatsapp", finalLivePhone);
-                } else {
-                    localStorage.clear();
-                    window.location.href = "login.html";
-                }
-            } catch (err) {
-                console.error("Background data aggregation paused:", err);
+            if (!profile.email && !token) {
+                profile = {
+                    full_name: "Test Patient Account",
+                    email: "patient@example.com", 
+                    whatsapp_number: "+1234567890"
+                };
+                document.getElementById("userRoleTitle").textContent = "Profile Viewer Mode";
             }
 
-            document.getElementById("logoutBtn").addEventListener("click", () => {
+            // Sync baseline profile data elements
+            document.getElementById("userNameDisplay").textContent = profile.full_name || "Patient Profile";
+            document.getElementById("profileFullName").textContent = profile.full_name || "N/A";
+            document.getElementById("profileEmail").textContent = profile.email || "N/A";
+
+            if (profile.email) {
+                const targetAuthToken = token || ANON_KEY;
+                
+                // Fetch appointments and WhatsApp concurrently
+                fetchUserAppointments(profile.email, targetAuthToken);
+                fetchUserWhatsAppNumber(profile.email, targetAuthToken, profile.whatsapp_number);
+            }
+
+            document.getElementById("portalLogout").addEventListener("click", (e) => {
+                e.preventDefault();
                 localStorage.clear();
                 window.location.href = "login.html";
             });
         });
+
+        // Pulls WhatsApp row parameter safely matching users table column name configuration
+        async function fetchUserWhatsAppNumber(userEmail, userToken, cachedNumber) {
+            const whatsappField = document.getElementById("profileWhatsApp");
+            
+            try {
+                const response = await fetch(`${SUPABASE_BASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(userEmail)}&select=whatsapp_number`, {
+                    method: "GET",
+                    headers: {
+                        "apikey": ANON_KEY,
+                        "Authorization": `Bearer ${userToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0 && data[0].whatsapp_number !== undefined && data[0].whatsapp_number !== null) {
+                        whatsappField.textContent = data[0].whatsapp_number;
+                        return;
+                    }
+                }
+                whatsappField.textContent = cachedNumber || "Not Provided";
+            } catch (err) {
+                console.error("Error reading WhatsApp column segment:", err);
+                whatsappField.textContent = cachedNumber || "Not Provided";
+            }
+        }
+
+        async function fetchUserAppointments(userEmail, userToken) {
+            const tableBody = document.getElementById("appointmentsTableBody");
+            
+            try {
+                const response = await fetch(`${SUPABASE_BASE_URL}/rest/v1/appointments?user_email=eq.${encodeURIComponent(userEmail)}&select=*`, {
+                    method: "GET",
+                    headers: {
+                        "apikey": ANON_KEY,
+                        "Authorization": `Bearer ${userToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error("Could not extract booking data segments.");
+
+                const appointments = await response.json();
+                tableBody.innerHTML = "";
+
+                if (appointments.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="no-data"><i class="fa-solid fa-calendar-minus"></i> No appointment slots found allocated to your username record (${userEmail}).</td></tr>`;
+                    return;
+                }
+
+                appointments.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+
+                appointments.forEach(item => {
+                    const row = document.createElement("tr");
+                    const shortTime = item.time ? item.time.substring(0, 5) : "--:--";
+
+                    row.innerHTML = `
+                        <td><strong>${item.date}</strong></td>
+                        <td><i class="fa-regular fa-clock" style="color: var(--primary-green);"></i> ${shortTime}</td>
+                        <td>${item.description || "No specific appointment summaries loaded."}</td>
+                        <td><span class="status-badge"><i class="fa-solid fa-circle-check"></i> Confirmed</span></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (err) {
+                console.error(err);
+                tableBody.innerHTML = `<tr><td colspan="4" class="no-data" style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> Error parsing schedule registry from database stream.</td></tr>`;
+            }
+        }
     </script>
 </body>
 </html>
